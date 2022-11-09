@@ -7,6 +7,28 @@ module.exports = (sequelize) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique:true
     },
+    id:{
+      type: DataTypes.INTEGER,
+      primaryKey:true,
+      autoIncrement:true
+    },
+    summary:{
+      type:DataTypes.STRING,
+      allowNull:false
+    },
+    health_score:{
+      type: DataTypes.INTEGER,
+      allowNull:true,
+      validate:{
+        min:0,
+        max:10
+      }
+    },
+    step_by_step:{
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   });
 };
