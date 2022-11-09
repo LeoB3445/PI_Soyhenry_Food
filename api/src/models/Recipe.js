@@ -6,8 +6,7 @@ module.exports = (sequelize) => {
   sequelize.define('recipe', {
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique:true
+      allowNull: false
     },
     id:{
       type: DataTypes.INTEGER,
