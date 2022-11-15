@@ -22,6 +22,6 @@ describe('associations', ()=>{
         .then(([recipe,diet]) =>
             recipe.setDiets([diet])
             .then(()=> expect(recipe.getDiets).to.equal([diet]))
-        )
-    })
+        );
+    });
 })
