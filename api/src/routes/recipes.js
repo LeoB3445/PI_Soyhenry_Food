@@ -16,7 +16,10 @@ recipes.get('/', function(req,res){
 
 recipes.get('/:id', function(req,res){
     Recipe.findByPK(req.params.id)
-    .then(found => res.send(found))
+    .then(recipe=>{
+        recipe.getDiets()
+        .then(diets => {res.send({recipe:recipe, dietArray: diets})})
+    })
 });
 
 recipes.post('/', function(req,res){
@@ -25,5 +28,6 @@ recipes.post('/', function(req,res){
         name:{[Op.in]:dietNameArray}
     }});
     Promise.all([recipeQ, dietQ])
-    .then(([recipe, dietArray]) => recipe.setDiets(dietArray));
-})
+    .then(([recipe, dietArray]) => recipe.setDiets(dietArray))
+    .then(()=>res.status(201).send());
+});
