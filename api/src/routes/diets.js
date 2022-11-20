@@ -28,3 +28,5 @@ diets.get('/', function(req,res){
         }
     })
 })
+
+module.exports= {diets};

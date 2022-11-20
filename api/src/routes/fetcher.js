@@ -1,4 +1,4 @@
-const {https} = require('node');
+const https = require('https');
 
 const fetcher = function(url){
     return new Promise((resolve,reject)=>{
@@ -18,3 +18,5 @@ const fetcher = function(url){
         })
     })
 }
+
+module.exports = fetcher;
