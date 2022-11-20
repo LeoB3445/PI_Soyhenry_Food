@@ -11,7 +11,7 @@ recipes.get('/', function(req,res){
         res.status(422).send('"name" query parameter is missing or undefined');
     }else{
         let dbQ = Recipe.findAll({where:{ //looks for db elems that have queried name in any position
-            name:{[Op.iLike]:'%'+req.query.name+'%'} 
+            name:{[Op.iLike]:req.query.name} 
         }})
         .then((found)=> Promise.all(found.map(element=>
             //takes all found elements, queries for their associated diets.
@@ -24,19 +24,18 @@ recipes.get('/', function(req,res){
 
         //makes initial api query for matching recipees.
         let apiQ = fetcher(`https://api.spoonacular.com/recipes/complexSearch?query=${req.query.name}&apiKey=${MY_API_KEY}`)
-        .then(res=> res.json())
-        .then(data => {
-            let idString = data.shift().id;
-            data.results.forEach(element => {
-                idString = idString+ ',' + element.id
-            }); //ids are accumulated in along string, separated by commas, then fetched in a single request
-            return fetcher(`https://api.spoonacular.com/recipes/${idString}/information`)
-            .then(recipeList => recipeList.map(element=>({id:element.id, name:element.title, img:element.image, diets:element.diets})))    
-        }
-        )
+        .then(({results}) => {
+            console.log(results);
+            return Promise.all(
+                results.map((element)=> fetcher(`https://api.spoonacular.com/recipes/${element.id}/information`))
+                );
+               
+        })
+        
         //once both queries are finished, data is sent back
         Promise.all([dbQ, apiQ])
         .then(([dbData, apiData])=> res.send({dbData:dbData, apiData:apiData}))
+        .catch(err=> res.status(500).send(err));;
     };
 });
 
